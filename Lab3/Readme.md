@@ -1,5 +1,5 @@
 # Make the Robot Move
-**List the names and NetID for your partners here.**
+**Yingbing Huang(yh374) and Frank Kim(ck766)**
 
 
 In this week's lab, you will lay the foundations for your mobile robot. We will control commercially available hoverboards (Dr. Ju bought these on eBay) with ODrive motor controllers. This week's lab can be challenging. Be prepared to get your hands dirty.
