@@ -14,11 +14,7 @@ As you can see, it's pretty easy to control the wheels with python! However, it'
 
 ### Deliverables for this lab are: 
 
-0. Fill in the questions along the way! 
-1. 1 photo of costumed device
-2. Reflections on the process
-3. Video sketch of 1 prototyped interactions with costumed device
-4. Submit the items above in the lab2 folder of your class [Github page], either as links or uploaded files. Each group member should post their own copy of the work to their own Lab Hub, even if some of the work is the same from each person in the group.
+0. Videos of you controlling the wheels with your joystick controller properly.
 
 ### The Report 
 This README.md page in your own repository should be edited to include the work you have done (the deliverables mentioned above). Following the format below, you can delete everything but the headers and the sections between the **stars**. Write the answers to the questions under the starred sentences. Include any material that explains what you did in this lab hub folder, and link it in your README.md for the lab.
@@ -30,9 +26,11 @@ A) [Connect Joystick Controller to RPi](#part-a-connect-joystick-controller-to-R
 
 B) [Read Messages from Joystick](#part-b-read-messages-from-Joystick)
 
-C) [Map buttons to control](#part-c-map-buttons-to-control)
+C) [Make it rumble](#part-c-make-it-rumble)
 
-D) [Try it with your hoverboard!](#part-d-try-it-with-your-hoverboard!) 
+C) [Map buttons to control](#part-d-map-buttons-to-control)
+
+D) [Try it with your hoverboard!](#part-e-try-it-with-your-hoverboard!) 
 
 Labs are due on Tuesdays before class. Make sure this page is linked to on your main class hub page.
 
@@ -41,23 +39,171 @@ Our wireless joystick controller connets to RPi through Bluetooth. If you are an
 
 It is much easier to pair a bluetooth device in VNC viewer. 
 1. login to VNC viewer.
-2. Setup bluetooth. Open a terminal on your RPi.
+2. Setup bluetooth. 
+Open a terminal on your RPi.
 ```bash
-sudo apt install bluez bluez-tools 
-sudo apt install blueman
+sudo apt install bluez*
+sudo apt install blueman # not the musical group, it is short for bluetooth management. 
 ```
+3. Open bluetooth management
+<img src="Images/blueman.jpg" width="600"/>
+4. open your joystick controller and boot it to wireless pairing mode. Instructions are printed on the back of the box.
+5. While your controller is double flashing, click the search button in the bluetooth manager. You should be able to find your controller.  Right click on the controller and select connect. Once connected, your controller LED should turn blue.
+<img src="Images/blueman_manager.jpg" width="600"/>
 
 ## Part B. Read Messages from Joystick
+Now, you successfully paired your controller with your RPi. Let's access the values through ROS 2.
 
-## Part C. Map buttons to control
+Open a terminal (either in VNC viewer or a local terminal that ssh to your RPi)
+```bash
+ros2 run joy joy_node
+# You should see somthing like the following:
+# [INFO] [1677696499.194657745] [joy_node]: Opened joystick: Wireless Controller.  deadzone: 0.050000
+```
+ROS 2 comes with a default package, `joy`, to communicate with joystick controllers. Recall in Lab 0, you wrote your own publisher to publish a string under the topic `hri_topic`. The Joy package read values from your controller and publish your input under a specific topic. `joy_node` is the name of the executable that is actually linked to the underlying python script. They are defined in the `setup.py`. Now, let's find out which topic it is!
 
-## Part D. Try it with your hoverboard!
+<details closed>
+<summary>More on `joy_node`</summary>
+
+Recall in lab 1, where we turned your code from Lab 0 into Lab 1, we had the following script. 
+```python
+from setuptools import setup
+
+package_name = 'my_package'
+
+setup(
+    name=package_name,
+    version='0.0.0',
+    packages=[package_name],
+    data_files=[
+        ('share/ament_index/resource_index/packages',
+            ['resource/' + package_name]),
+        ('share/' + package_name, ['package.xml']),
+    ],
+    install_requires=['setuptools'],
+    zip_safe=True,
+    maintainer='user',
+    maintainer_email='user@todo.todo',
+    description='TODO: Package description',
+    license='TODO: License declaration',
+    tests_require=['pytest'],
+    entry_points={
+        'console_scripts': [
+            'talker = my_package.hri_publisher:main',       # NEW!
+            'listener = my_package.hri_subscriber:main',    # NEW!
+        ],
+    },
+)
+```
+In the `entry_point` section, we defined two entry points `talker` and `listener` to the main functions we wrote in python files. We are basically creating a shortcut for ROS 2 to find our code easily. Of course, we can also execute those functions directly through the command `python3` instead of `ros2`. This is just a good practice to keep your code clean.
+</details>
+
+Leave the previous terminal running, and open a new terminal terminal
+```python
+ros2 topic list
+# You should see the following
+''' 
+/joy
+/joy/set_feedback
+/parameter_events
+/rosout
+'''
+```
+Let's see what's actually being published under the topic `/joy`. We will talk about `/joy/set_feedback` later. In the same terminal,
+```
+ros2 topic echo /joy
+```
+A lot of things are printing to the screen! Since the node is continuously publishing the message, I just copied one message below to demonstrate. **Try pressing different buttons and turning different knobs on the controller to see what changes.**
+```
+---
+header:
+  stamp:
+    sec: 1677700131
+    nanosec: 527338319
+  frame_id: joy
+axes:
+- -0.0
+- -0.0
+- 1.0
+- -0.0
+- -0.0
+- 1.0
+- 0.0
+- 0.0
+buttons:
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+- 0
+---
+```
+
+As you can see, all axes values are **continuous floats**, and all button values are **binary integers**. This is why we use joystick to control continous transitions, such as movement of avatars, and use buttons to toggle binary state. In python, `axes` and `buttons` are just arrays, which you can easily index into to select which button or joystick you are interested in. We will talk more about this in the next lab.
+
+
+## Part C. Make it rumble!
+Modern joystick controllers are not just simple input devices. They can also provide feedback to users through vibration (pretty common in shooting or racing games). In fact, tactile feedback can also carry rich information and is already ubiquitous (e.g. your phone provides plenty of tactile feedback to you).
+
+If you are interested in controlling your robot through Wizard-of-Oz, it is worth considering what feedback you want to provide to the wizard. Of course, visual feedback is always important: the wizard needs to see the surrouding of the robot they are controlling. Beyond that, a touch of vibration would make the whole interaction more interesting. For example, you can make the joystick rumble when a person is near the robot.
+
+To make the controller rumble, we will make use of the `/joy/set_feedback` topic. You have seen it ealier when you ran `ros2 topic list`. It is also provided by the `Joy` package.First, let's check out what kind of message this topic is expecting. We can use the command `ros2 topic info [TOPIC_NAME]` to inspect any active topic.
+
+```bash
+ros2 topic info /joy/set_feedback
+# Type: sensor_msgs/msg/JoyFeedback
+# Publisher count: 0
+# Subscription count: 1
+```
+From returned information, we learned that this topic is expecting a sensor message of type `JoyFeedback`. Currently, no node is publishing on this topic, but there is one subscriber.
+
+So, what's up with the JoyFeedback message? Let's see how it is [defined](http://docs.ros.org/en/api/sensor_msgs/html/msg/JoyFeedback.html).
+
+Just in case you are too lazy to click on the link above, I copied the message definition below. 
+```bash
+# Declare of the type of feedback
+uint8 TYPE_LED    = 0
+uint8 TYPE_RUMBLE = 1
+uint8 TYPE_BUZZER = 2
+
+uint8 type
+
+# This will hold an id number for each type of each feedback.
+# Example, the first led would be id=0, the second would be id=1
+uint8 id
+
+# Intensity of the feedback, from 0.0 to 1.0, inclusive.  If device is
+# actually binary, driver should treat 0<=x<0.5 as off, 0.5<=x<=1 as on.
+float32 intensity
+```
+A JoyFeedback message contains three field, type, id, and intensity. The type parameter specifies what kind of feedback we are dealing with. In our case, we want `TYPE_RUMBLE`. We we have multiple feedback devices, you want to specify which device you are talking about through `id`. We can go with default 0 for now. For intensity, note that it is a number between 0 and 1. 
+
+Now, let's publish some messages to the topic `/joy/set_feedback`. To be honest, I feel lazy now. I don't want to write an entire package, just like what we did in lab0, to publish a simple string. I want a quick and dirty way to debug and prototype. Luckily, ROS comes with plenty of command line tools to make your life easier. 
+
+To publish messages to a topic through command line, use the following syntax
+```
+ros2 topic pub [Frequency] [Topic Name] [Message Type] [Content]
+```
+
+In the following command, I am saying to publish message `"{type: 1, id: 0, intensity: 0.9}"` to `/joy/set_feedback` at 10 Hz. The message is of type `sensor_msgs/msg/JoyFeedback`.
+```
+ros2 topic pub -r 10 /joy/set_feedback sensor_msgs/msg/JoyFeedback "{type: 1, id: 0, intensity: 0.9}"
+```
+
+Try it! Make your controller rumble!
+## Part D. Map buttons to control
+
+## Part E. Try it with your hoverboard!
 
 
 ### Again, deliverables for this lab are: 
 
-0. Fill in the questions along the way! 
-1. photos of costumed robots
-2. Reflections on the process
-3. Video sketch of 1 prototyped interactions with the costumed device
-4. Submit the items above in the lab2 folder of your class [Github page], either as links or uploaded files. Each group member should post their own copy of the work to their own Lab Hub, even if some of the work is the same from each person in the group.
+0. 
