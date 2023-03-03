@@ -231,14 +231,16 @@ $v = wr$. Or  $w = \frac{v}{r}$. Linear velocity is the product of angular veloc
 With that, we can easily express $v_l$ and $v_r$ as the following,
 ```math
 v_l = w(R - \frac{l}{2}) = wR - \frac{lw}{2} 
-
+```
+```math
 v_r = w(R + \frac{l}{2}) = wR + \frac{lw}{2}
 ```
 
 Note that $v = wR$, so we can rewrite the above equations as the following
 ```math
 v_l = (v - \frac{l}{2})w = v - \frac{lw}{2} 
-
+```
+```math
 v_r = (v + \frac{l}{2})w = v + \frac{lw}{2}
 ```
 Great! We get rid of $R$ in our equation, which we don't have access to in real time.
@@ -246,7 +248,8 @@ Great! We get rid of $R$ in our equation, which we don't have access to in real 
 One last step, we need to convert individual wheel velocity to  angular velocity. We need to apply the magic equation again, but this time with wheel radius. I am going to abuse the symbol $v_l$ and $v_r$ here since that's what I used in the python code.
 ```math
 v_l = (v - \frac{lw}{2})/r
-
+```
+```math
 v_r = (v + \frac{lw}{2})/r
 ```
 
