@@ -215,30 +215,30 @@ Let's do some math! This is probably the only math you will do all semester. In 
 When the hoverboard is moving in a straight line (forward/backword), the control is pretty straight forward. When the hoverboard is turning, the hoverboard must rotate about a point, Instantaneous Center of Curvature (ICC), that lies along the common left and right wheel axis (as shown above). (When the robot is moving in a straight line, ICC is infinitely far away.)
 
 In this problem, the following variables are known
-- $`v`$: robot linear velocity 
-- $`w`$: robot angular velocity
-- $`l`$: wheel track distance (distance between the wheels)
-- $`r`$: wheel radius (not shown in the diagram)
+- $v$: robot linear velocity 
+- $w$: robot angular velocity
+- $l$: wheel track distance (distance between the wheels)
+- $r$: wheel radius (not shown in the diagram)
 
 The following variables are unknown (or difficult to track)
-- $`R`$: radius for $ICC$
-- $`v_l`$: what we need
-- $`v_r`$: what we need
+- $R$: radius for $ICC$
+- $v_l$: what we need
+- $v_r$: what we need
 
 The key equation we need here is the relation between linear velocity and angular velocity, which we all learned at some point in physics. 
-$`v = wr`$. Or  $`w = \frac{v}{r}`$. Linear velocity is the product of angular velocity and radius.
+$v = wr$. Or  $w = \frac{v}{r}$. Linear velocity is the product of angular velocity and radius.
 
 With that, we can easily express $v_l$ and $v_r$ as the following,
 ```math
 v_l = w(R - \frac{l}{2}) = wR - \frac{lw}{2} 
-\newline
+
 v_r = w(R + \frac{l}{2}) = wR + \frac{lw}{2}
 ```
 
 Note that $v = wR$, so we can rewrite the above equations as the following
 ```math
 v_l = (v - \frac{l}{2})w = v - \frac{lw}{2} 
-\newline
+
 v_r = (v + \frac{l}{2})w = v + \frac{lw}{2}
 ```
 Great! We get rid of $R$ in our equation, which we don't have access to in real time.
@@ -246,7 +246,7 @@ Great! We get rid of $R$ in our equation, which we don't have access to in real 
 One last step, we need to convert individual wheel velocity to  angular velocity. We need to apply the magic equation again, but this time with wheel radius. I am going to abuse the symbol $v_l$ and $v_r$ here since that's what I used in the python code.
 ```math
 v_l = (v - \frac{lw}{2})/r
-\newline
+
 v_r = (v + \frac{lw}{2})/r
 ```
 
