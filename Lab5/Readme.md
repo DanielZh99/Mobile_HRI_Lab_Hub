@@ -229,12 +229,10 @@ The key equation we need here is the relation between linear velocity and angula
 $v = wr$. Or  $w = \frac{v}{r}$. Linear velocity is the product of angular velocity and radius.
 
 With that, we can easily express $v_l$ and $v_r$ as the following,
-$$
+```math
 v_l = w(R - \frac{l}{2}) = wR - \frac{lw}{2} 
-$$
-$$
 v_r = w(R + \frac{l}{2}) = wR + \frac{lw}{2}
-$$
+```
 
 Note that $v = wR$, so we can rewrite the above equations as the following
 $$
