@@ -200,9 +200,64 @@ ros2 topic pub -r 10 /joy/set_feedback sensor_msgs/msg/JoyFeedback "{type: 1, id
 
 Try it! Make your controller rumble!
 ## Part D. Map buttons to control
+I have written some code that subscribe to the `/joy` topic and publish a [twist](http://docs.ros.org/en/lunar/api/geometry_msgs/html/msg/Twist.html) message accordingly. A twist message consists of two vectors, one represents linear velocity and one represents angular velocity.
+
+Download my code
+
+
+> Feel free to customize my code however you want. There are so many buttons and triggers on the controller, be creative!
 
 ## Part E. Try it with your hoverboard!
+Let's do some math! This is probably the only math you will do all semester. In the previous step, we mapped joystick controller commands to a message type called twist (mainly linear velocity and angular velocity). We need another layer of computation to convert twist to commands that ODrive understands (angular velocity for wheels on each axis). Imagine the following simplified diagram. 
 
+<img src="Images/diff_drive.jpg" width="800"/>
+
+When the hoverboard is moving in a straight line (forward/backword), the control is pretty straight forward. When the hoverboard is turning, the hoverboard must rotate about a point, Instantaneous Center of Curvature (ICC), that lies along the common left and right wheel axis (as shown above). (When the robot is moving in a straight line, ICC is infinitely far away.)
+
+In this problem, the following variables are known
+- $v$: robot linear velocity 
+- $w$: robot angular velocity
+- $l$: wheel track distance (distance between the wheels)
+- $r$: wheel radius (not shown in the diagram)
+
+The following variables are unknown (or difficult to track)
+- $R$: radius for $ICC$
+- $v_l$: what we need
+- $v_r$: what we need
+
+The key equation we need here is the relation between linear velocity and angular velocity, which we all learned at some point in physics. 
+$v = wr$. Or  $w = \frac{v}{r}$. Linear velocity is the product of angular velocity and radius.
+
+With that, we can easily express $v_l$ and $v_r$ as the following,
+$$
+v_l = w(R - \frac{l}{2}) = wR - \frac{lw}{2} 
+$$
+$$
+v_r = w(R + \frac{l}{2}) = wR + \frac{lw}{2}
+$$
+
+Note that $v = wR$, so we can rewrite the above equations as the following
+$$
+v_l = (v - \frac{l}{2})w = v - \frac{lw}{2} 
+$$
+$$
+v_r = (v + \frac{l}{2})w = v + \frac{lw}{2}
+$$
+Great! We get rid of $R$ in our equation, which we don't have access to in real time.
+
+One last step, we need to convert individual wheel velocity to  angular velocity. We need to apply the magic equation again, but this time with wheel radius. I am going to abuse the symbol $v_l$ and $v_r$ here since that's what I used in the python code.
+$$
+v_l = (v - \frac{lw}{2})/r
+$$
+$$
+v_r = (v + \frac{lw}{2})/r
+$$
+
+Complete the code in `mobile_robot_control/mobile_robot_control/odrive_command.py` with the computation we just did.
+Wheel track distance and wheel radius are renamed as `self.wheel_track` and `self.tyre_circumference` respectively. In the future, change the wheel track distance to match your own robot. 
+
+
+Now, try it out with your robot!
 
 ### Again, deliverables for this lab are: 
 
