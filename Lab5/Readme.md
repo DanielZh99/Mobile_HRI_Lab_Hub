@@ -238,10 +238,10 @@ v_r = w(R + \frac{l}{2}) = wR + \frac{lw}{2}
 
 Note that $v = wR$, so we can rewrite the above equations as the following
 ```math
-v_l = (v - \frac{l}{2})w = v - \frac{lw}{2} 
+v_l = wR - \frac{lw}{2}  = v - \frac{lw}{2} 
 ```
 ```math
-v_r = (v + \frac{l}{2})w = v + \frac{lw}{2}
+v_r = wR + \frac{lw}{2}  = v + \frac{lw}{2}
 ```
 Great! We get rid of $R$ in our equation, which we don't have access to in real time.
 
@@ -253,9 +253,24 @@ v_l = (v - \frac{lw}{2})/r
 v_r = (v + \frac{lw}{2})/r
 ```
 
-Complete the code in `mobile_robot_control/mobile_robot_control/odrive_command.py` with the computation we just did.
+Now, clone the ROS 2 code base.
+```bash
+# On RPi
+cd ~
+mkdir -p ~/mobilehri_ws/src
+cd ~/mobilehri_ws/src
+git clone https://github.com/FAR-Lab/mobilehri2023.git 
+```
+
+**TODO**: Complete the code in `~/mobilehri_ws/src/mobilehri2023/mobile_robot_control/mobile_robot_control/odrive_command.py` with the computation we just did. I strongly recommend you to use VS Code to code (check previous lab for details). Your **TODOs** are on line 54 and 74.
+
 Wheel track distance and wheel radius are renamed as `self.wheel_track` and `self.tyre_circumference` respectively. In the future, change the wheel track distance to match your own robot. 
 
+```bash
+# On RPi
+cd ~/mobilehri_ws
+colcon build
+```
 
 Now, try it out with your robot!
 
