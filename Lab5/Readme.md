@@ -15,6 +15,7 @@ As you can see, it's pretty easy to control the wheels with python! However, it'
 ### Deliverables for this lab are: 
 
 0. Videos of you controlling the wheels with your joystick controller properly.
+1. Three ideas on how to use controllers' rumble feature for Wizard of Oz.
 
 ### The Report 
 This README.md page in your own repository should be edited to include the work you have done (the deliverables mentioned above). Following the format below, you can delete everything but the headers and the sections between the **stars**. Write the answers to the questions under the starred sentences. Include any material that explains what you did in this lab hub folder, and link it in your README.md for the lab.
@@ -199,10 +200,20 @@ ros2 topic pub -r 10 /joy/set_feedback sensor_msgs/msg/JoyFeedback "{type: 1, id
 ```
 
 Try it! Make your controller rumble!
+
+** **Come up with three ways where the rumble feature can benefit WoZ deployment or other applications.** **
+
 ## Part D. Map buttons to control
 I have written some code that subscribe to the `/joy` topic and publish a [twist](http://docs.ros.org/en/lunar/api/geometry_msgs/html/msg/Twist.html) message accordingly. A twist message consists of two vectors, one represents linear velocity and one represents angular velocity.
 
-Download my code
+Now, clone the ROS 2 code base.
+```bash
+# On RPi
+cd ~
+mkdir -p ~/mobilehri_ws/src
+cd ~/mobilehri_ws/src
+git clone https://github.com/FAR-Lab/mobilehri2023.git 
+```
 
 
 > Feel free to customize my code however you want. There are so many buttons and triggers on the controller, be creative!
@@ -253,15 +264,6 @@ v_l = (v - \frac{lw}{2})/r
 v_r = (v + \frac{lw}{2})/r
 ```
 
-Now, clone the ROS 2 code base.
-```bash
-# On RPi
-cd ~
-mkdir -p ~/mobilehri_ws/src
-cd ~/mobilehri_ws/src
-git clone https://github.com/FAR-Lab/mobilehri2023.git 
-```
-
 **TODO**: Complete the code in `~/mobilehri_ws/src/mobilehri2023/mobile_robot_control/mobile_robot_control/odrive_command.py` with the computation we just did. I strongly recommend you to use VS Code to code (check previous lab for details). Your **TODOs** are on line 54 and 74.
 
 Wheel track distance and wheel radius are renamed as `self.wheel_track` and `self.tyre_circumference` respectively. In the future, change the wheel track distance to match your own robot. 
@@ -272,8 +274,25 @@ cd ~/mobilehri_ws
 colcon build
 ```
 
-Now, try it out with your robot!
+Now, try it out with your robot! Hook up both wheels to ODrive and connect to power (if the cable is too short, one wheel is okay for now).
+
+```
+source install/setup.bash
+ros2 launch mobile_robot_control mobile_robot_launch.py
+```
+
+<details closed>
+<summary>What is `ros2 launch`?</summary>
+As your system scales up, you will run many nodes and define many parameters.
+ROS 2 launch files are designed to help you organize your program execution and make start up process efficient.
+
+If you take a look at `mobile_robot_launch.py` in `mobile_robot_control/launch/`, you will notice that we started three nodes in this file. If we do not have this launch file, we need to open three terminals and run `ros2 run` on each node.
+
+</details>
+
+Now, press and hold `L1` on your controller and play with the two joysticks. Hopefully your wheels will start spinning now!
 
 ### Again, deliverables for this lab are: 
 
-0. 
+0. Videos of you controlling the wheels with your joystick controller properly.
+1. Three ideas on how to use controllers' rumble feature for Wizard of Oz.
