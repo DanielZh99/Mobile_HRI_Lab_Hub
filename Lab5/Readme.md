@@ -1,5 +1,5 @@
 # Give the robot moves
-**List the names and NetID for your partners here.**
+**Yingbing Huang(yh374), Frank Kim(ck766), Nhan Tran(nt322) **
 
 Now, let's control our robots to make them move intuitively. 
 
