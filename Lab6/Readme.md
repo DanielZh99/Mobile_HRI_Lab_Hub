@@ -1,5 +1,5 @@
 # Choreographing Movement
-**List the names and NetID for your partners here.**
+**Yingbing Huang(yh374), Frank Kim(ck766), Nhan Tran(nt322)**
 
 It is about time to have a functioning mobile robot! Starting from this lab, you should prioritize either robot building and/or study design. 
 
