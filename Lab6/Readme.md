@@ -104,3 +104,4 @@ To visualize your LiDAR reading, open foxglove studio in vnc viewer. Then, click
 3. A video showing your robot perform the movements in 2.
 4. Reflect upon your design, what would you do differently?
 
+We aim to implement 2 improvements in the near future. Firstly, enhancing the stability of the robot is a priority, as it currently exhibits instability during movement. Secondly, we plan to strengthen the connection between the robot and its controller, as the existing connection experiences occasional disruptions.
