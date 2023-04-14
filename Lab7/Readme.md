@@ -1,7 +1,7 @@
 # Interact with with people + chatty robot
 
 
-**List the names and NetID for your partners here.**
+**Yingbing Huang(yh374), Frank Kim(ck766), Nhan Tran(nt322)**
 
 
 In this lab, let's try out some moves with our robots and make them talk!
